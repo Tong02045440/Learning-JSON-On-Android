@@ -1,6 +1,7 @@
 package com.example.demoapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -22,9 +23,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.demoapp.ui.theme.DemoAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -39,26 +42,32 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = "greeting", // The route for the first screen to show
+                        startDestination = "greeting",
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        // Define the "greeting" destination
                         composable(route = "greeting") {
                             GreetingScreen(
                                 onNavigateToSecondScreen = { name ->
-                                    // Navigate to the "second_screen" route, passing the name
-                                    navController.navigate("second_screen/$name")
+                                    navController.navigate("second_screen?name=$name")
                                 }
                             )
                         }
 
-                        // Define the "second_screen" destination with an argument
-                        composable(route = "second_screen/{name}") { backStackEntry ->
-                            // Retrieve the argument from the backStackEntry
-                            val name = backStackEntry.arguments?.getString("name") ?: "Guest"
+                        composable(
+                            route = "second_screen?name={name}"
+                            /*arguments = listOf(
+                                navArgument("name") {
+                                    type = NavType.StringType
+                                    nullable = true
+                                    defaultValue = "Guest"
+                                }
+                            )*/
+                        ) { backStackEntry ->
+                            var name = backStackEntry.arguments?.getString("name") ?: "Guest"
+                            if (name.isBlank()) name = "Guest"
                             SecondScreen(
                                 name = name,
-                                onNavigateUp = { navController.navigateUp() } // Navigate back
+                                onNavigateUp = { navController.navigateUp() }
                             )
                         }
                     }
