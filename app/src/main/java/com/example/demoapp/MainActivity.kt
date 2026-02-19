@@ -54,17 +54,16 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(
-                            route = "second_screen?name={name}"
-                            /*arguments = listOf(
+                            route = "second_screen?name={name}",
+                            arguments = listOf(
                                 navArgument("name") {
                                     type = NavType.StringType
                                     nullable = true
-                                    defaultValue = "Guest"
                                 }
-                            )*/
+                            )
                         ) { backStackEntry ->
-                            var name = backStackEntry.arguments?.getString("name") ?: "Guest"
-                            if (name.isBlank()) name = "Guest"
+                            val name = backStackEntry.arguments?.getString("name").takeIf { !it.isNullOrBlank() } ?: "Guest"
+
                             SecondScreen(
                                 name = name,
                                 onNavigateUp = { navController.navigateUp() }
