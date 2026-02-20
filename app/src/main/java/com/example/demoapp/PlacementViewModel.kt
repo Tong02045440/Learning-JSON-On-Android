@@ -1,6 +1,8 @@
 package com.example.demoapp
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,13 +19,23 @@ data class Tile(
     val enabled: Boolean = true
 )
 
-class PlacementViewModel : ViewModel() {
+class PlacementViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(PlacementViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return PlacementViewModel(GridDataManager(context)) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+
+class PlacementViewModel(private val gridDataManager: GridDataManager) : ViewModel() {
 
     private val _tiles = MutableStateFlow<List<Tile>>(emptyList())
     val tiles: StateFlow<List<Tile>> = _tiles.asStateFlow()
 
     init {
-        _tiles.value = List(100) { Tile() }
+        _tiles.value = gridDataManager.loadTiles()
     }
 
     fun onTileClicked(index: Int) {
@@ -35,9 +47,15 @@ class PlacementViewModel : ViewModel() {
             enabled = false
         )
         _tiles.value = currentTiles
+        saveTiles()
     }
 
     fun onResetClicked() {
         _tiles.value = List(100) { Tile() }
+        saveTiles()
+    }
+
+    private fun saveTiles() {
+            gridDataManager.saveTiles(_tiles.value)
     }
 }
