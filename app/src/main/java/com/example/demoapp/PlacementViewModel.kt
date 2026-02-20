@@ -30,18 +30,21 @@ class PlacementViewModel : ViewModel() {
         val currentTiles = _tiles.value.toMutableList()
         val clickedTile = currentTiles[index]
 
-        if (clickedTile.shape == Shape.CIRCLE) {
-            val randomColor = Color(
-                red = Random.nextFloat(),
-                green = Random.nextFloat(),
-                blue = Random.nextFloat(),
-            )
-            currentTiles[index] = clickedTile.copy(
-                shape = Shape.SQUARE,
-                color = randomColor,
-                enabled = false
-            )
-            _tiles.value = currentTiles
-        }
+        val randomColor = Color(
+            red = Random.nextFloat(),
+            green = Random.nextFloat(),
+            blue = Random.nextFloat()
+        )
+
+        currentTiles[index] = clickedTile.copy(
+            shape = Shape.SQUARE,
+            color = randomColor,
+            enabled = false
+        )
+        _tiles.value = currentTiles
+    }
+
+    fun onResetClicked() {
+        _tiles.value = List(100) { Tile() }
     }
 }
