@@ -77,7 +77,7 @@ fun ButtonGrid(tiles: List<Tile>, onTileClick: (Int) -> Unit,onResetClick: () ->
                             id = if (tile.shape == Shape.CIRCLE) R.drawable.circle else R.drawable.square
                         ),
                         contentDescription = "Tile at index $index",
-                        tint = tile.color
+                        tint = if (tile.shape == Shape.CIRCLE) Color.Gray else Color.Red
                     )
                 }
             }
