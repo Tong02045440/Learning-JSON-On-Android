@@ -45,7 +45,7 @@ fun ButtonGrid(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Place your ships!",
+            text = "Place your tiles!",
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )
